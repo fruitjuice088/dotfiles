@@ -14,6 +14,7 @@ set formatoptions-=cro
 
 inoremap <silent> jj <ESC>
 nnoremap <silent> ~~ :s/^\( *-* *\)\(.*\)/\1\~\~\2\~\~<CR>:noh<CR>
+nnoremap <silent> ** :s/^\( *-* *\)\(.*\)/\1\*\*\2\*\*<CR>:noh<CR>
 
 " Install Jetpack for nvim
 " mkdir $env:LocalAppData\nvim-data\site\pack\jetpack\opt\vim-jetpack\plugin
