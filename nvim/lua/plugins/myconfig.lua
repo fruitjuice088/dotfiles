@@ -12,4 +12,8 @@ return {
     event = "BufEnter",
     opts = { "*" },
   },
+  {
+    "lukoshkin/highlight-whitespace",
+    config = true,
+  },
 }
