@@ -1,7 +1,3 @@
-if not vim.env.OneDriveCommercial then
-  return {}
-end
-
 return {
   {
     "zbirenbaum/copilot.lua",
@@ -24,6 +20,13 @@ return {
         hgcommit = true,
       },
     },
+    -- called when plugin is called
+    config = function(_, opts)
+      require("copilot").setup(opts)
+      if vim.env.OneDriveCommercial == nil then
+        vim.cmd("Copilot disable")
+      end
+    end,
   },
 
   {
@@ -41,7 +44,7 @@ return {
           width = 0.4,
         },
         require("CopilotChat").setup({
-          show_help = "yes",
+          show_help = true,
           prompts = {
             Explain = {
               prompt = "/COPILOT_EXPLAIN コードを日本語で説明してください",

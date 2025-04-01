@@ -1,4 +1,4 @@
-local journal_dir = vim.env.OneDrive .. "\\repos\\notes"
+local journal_dir = vim.env.OneDrive .. "\\repos\\memos"
 if vim.env.OneDriveCommercial then
   journal_dir = vim.env.OneDriveCommercial .. "\\notes"
 end

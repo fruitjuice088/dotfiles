@@ -5,7 +5,7 @@ local function get_date_filename()
 end
 
 local function open_file(filepath)
-  vim.cmd("edit " .. filepath)
+  vim.cmd("silent! edit " .. filepath)
 end
 
 local function is_valid_journal(filename)
@@ -18,10 +18,9 @@ M.setup = function(args)
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
       local cwd = vim.fn.getcwd()
-      local sep = "\\"
       if cwd == M.journal_dir then
         require("dailyjournal").open_today_journal()
-        vim.cmd("bdelete")
+        vim.cmd("set filetype=markdown")
       end
     end,
   })
