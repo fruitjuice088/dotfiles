@@ -21,6 +21,9 @@ M.setup = function(args)
       if cwd == M.journal_dir then
         require("dailyjournal").open_today_journal()
         vim.cmd("set filetype=markdown")
+        if vim.env.OneDriveCommercial ~= nil then
+          vim.cmd("bdelete")
+        end
       end
     end,
   })
