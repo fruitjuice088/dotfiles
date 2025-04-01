@@ -7,9 +7,9 @@ local function ctime()
   return os.date("%H:%M")
 end
 
-luasnip.add_snippets("markdown", {
+return {
   s("ctime", {
     t("current time is "),
     f(ctime, {}),
   }),
-})
+}

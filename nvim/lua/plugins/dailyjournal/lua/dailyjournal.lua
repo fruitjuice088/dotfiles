@@ -13,7 +13,18 @@ local function is_valid_journal(filename)
 end
 
 M.setup = function(args)
-  M.journal_dir = vim.env.OneDrive .. "/notes"
+  M.journal_dir = args.journal_dir or vim.env.USERPROFILE .. "/notes"
+
+  vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+      local cwd = vim.fn.getcwd()
+      local sep = "\\"
+      if cwd == M.journal_dir then
+        require("dailyjournal").open_today_journal()
+        vim.cmd("bdelete")
+      end
+    end,
+  })
 end
 
 function M.open_today_journal()

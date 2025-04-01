@@ -1,6 +1,13 @@
+local journal_dir = vim.env.OneDrive .. "\\repos\\notes"
+if vim.env.OneDriveCommercial then
+  journal_dir = vim.env.OneDriveCommercial .. "\\notes"
+end
+
 return {
   {
     dir = vim.env.LOCALAPPDATA .. "/nvim/lua/plugins/dailyjournal/",
-    config = {},
+    config = {
+      journal_dir = journal_dir
+    },
   },
 }

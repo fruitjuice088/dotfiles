@@ -13,15 +13,3 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   command = "silent! wall",
   nested = true,
 })
-
--- for dailyjournal
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local cwd = vim.fn.getcwd()
-    local sep = "\\"
-    if cwd == vim.env.OneDrive .. sep .. "notes" then
-      require("dailyjournal").open_today_journal()
-      vim.cmd("bdelete")
-    end
-  end,
-})

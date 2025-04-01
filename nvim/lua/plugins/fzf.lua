@@ -2,7 +2,7 @@
 
 return {
   {
-    "snacks.nvim",
+    "folke/snacks.nvim",
     opts = {
       dashboard = {
         preset = {
@@ -21,7 +21,7 @@ return {
       },
     },
   },
-  --
+
   -- setup fzf-lua
   { import = "lazyvim.plugins.extras.editor.fzf" },
   {

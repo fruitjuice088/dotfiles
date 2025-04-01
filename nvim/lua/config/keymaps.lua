@@ -4,8 +4,8 @@
 
 vim.keymap.set("n", "<leader>fej", ":e ++encoding=sjis<CR>")
 
-vim.keymap.set("n", "~~", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\~\\~\\2\\~\\~<CR>:noh<CR>")
-vim.keymap.set("n", "**", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\*\\*\\2\\*\\*<CR>:noh<CR>")
+vim.keymap.set("n", "~~", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\~\\~\\2\\~\\~<CR>:noh<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "**", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\*\\*\\2\\*\\*<CR>:noh<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("i", "<A-b>", '<C-R>=strftime("%H:%M")"<CR>')
 vim.keymap.set("n", "<A-b>", '<C-R>=strftime("%H:%M")"<CR>')
