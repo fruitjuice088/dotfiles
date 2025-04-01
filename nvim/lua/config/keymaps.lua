@@ -4,8 +4,10 @@
 
 vim.keymap.set("n", "<leader>fej", ":e ++encoding=sjis<CR>")
 
-vim.keymap.set("n", "~~", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\~\\~\\2\\~\\~<CR>:noh<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "**", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\*\\*\\2\\*\\*<CR>:noh<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>~~", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\~\\~\\2\\~\\~<CR>:noh<CR>")
+vim.keymap.set("n", "<leader>**", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\*\\*\\2\\*\\*<CR>:noh<CR>")
 
 vim.keymap.set("i", "<A-b>", '<C-R>=strftime("%H:%M")"<CR>')
 vim.keymap.set("n", "<A-b>", '<C-R>=strftime("%H:%M")"<CR>')
+vim.keymap.set("n", '<C-i>', '<Cmd>lua require("dailyjournal").open_today_journal()<CR>')
+vim.keymap.set("n", '<C-A-i>', '<Cmd>lua require("dailyjournal").open_latest_journal()<CR>')
