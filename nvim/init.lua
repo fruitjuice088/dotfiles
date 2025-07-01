@@ -18,6 +18,19 @@ vim.opt.ignorecase = true                -- 検索時大文字小文字無視
 vim.opt.smartcase = true                 -- 大文字含む場合は区別
 vim.opt.incsearch = true                 -- インクリメンタル検索
 vim.opt.hlsearch = true                  -- 検索結果ハイライト
+vim.opt.cursorline = true                -- カーソル行ハイライト
+
+-- 背景透過設定
+vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+    vim.api.nvim_set_hl(0, "LineNr", { fg = "#d7af5f" })
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2c2c2c" })
+    vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#d7af5f", bold = true })
+  end,
+})
 
 -- あなた専用の文字エンコーディング設定
 vim.opt.fileencodings = "utf-8,sjis,euc-jp,cp932"
@@ -344,6 +357,9 @@ vim.defer_fn(function()
     return
   end
   which_key.setup({
+    win = {
+      border = "single", -- 枠を追加して見やすくする
+    },
     -- 軽量性を維持するため、デフォルト。これでも充分らしい。
   })
 end, 1000) -- 他のプラグイン読み込み後に実行
@@ -354,7 +370,7 @@ end, 1000) -- 他のプラグイン読み込み後に実行
 -- ファイル操作の便利キーマップ
 vim.keymap.set("n", "<leader>e", ":Explore<CR>", { desc = "Open file explorer" })
 vim.keymap.set("n", "<leader>f", ":find ", { desc = "Find file" })
-vim.keymap.set("n", "<leader>/", ":grep -n ", { desc = "Grep search" })
+-- TODO: <leader>/ で全文検索したい
 
 -- バッファ操作
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Delete buffer" })
