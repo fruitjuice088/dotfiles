@@ -332,19 +332,24 @@ end, 3200) -- cmpの後に実行
 -- Phase 3: 利便性向上 (カラー・ファイル操作) - 起動時間 50-100ms目標
 -- ============================================================================
 
--- 基本的なカラー設定（プラグイン不要）
-vim.opt.termguicolors = true
-vim.opt.background = "dark"
+-- ============================================================================
+-- START: which-key.nvim の設定
+-- ============================================================================
+ensure_plugin("folke/which-key.nvim", "which-key.nvim")
 
--- シンプルなカラー調整（kanagawa風）
-vim.api.nvim_create_autocmd("ColorScheme", {
-  pattern = "*",
-  callback = function()
-    -- コメントの色を変更（あなたの設定を反映）
-    vim.api.nvim_set_hl(0, "Comment", { fg = "#5ba68e", italic = true })
-    vim.api.nvim_set_hl(0, "LineNr", { fg = "#7b7291" })
-  end,
-})
+vim.defer_fn(function()
+  local ok, which_key = pcall(require, "which-key")
+  if not ok then
+    print("which-key.nvim not found")
+    return
+  end
+  which_key.setup({
+    -- 軽量性を維持するため、デフォルト。これでも充分らしい。
+  })
+end, 1000) -- 他のプラグイン読み込み後に実行
+-- ============================================================================
+-- END: which-key.nvim の設定
+-- ============================================================================
 
 -- ファイル操作の便利キーマップ
 vim.keymap.set("n", "<leader>e", ":Explore<CR>", { desc = "Open file explorer" })
@@ -361,21 +366,6 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
-
--- ============================================================================
--- 追加のマークダウン機能（journalディレクトリで強化）
--- ============================================================================
-
--- markdownファイル用の追加機能
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function()
-    -- リスト操作
-    vim.keymap.set("n", "<leader>-", ":s/^/- /<CR>:noh<CR>", { buffer = true, desc = "Add list item" })
-    vim.keymap.set("n", "<leader>x", ":s/^- \\[ \\]/- [x]/<CR>:noh<CR>", { buffer = true, desc = "Mark task done" })
-    vim.keymap.set("n", "<leader>o", ":s/^- \\[x\\]/- [ ]/<CR>:noh<CR>", { buffer = true, desc = "Mark task undone" })
-  end,
-})
 
 -- ============================================================================
 -- 設定完了
