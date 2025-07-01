@@ -55,7 +55,6 @@ ensure_plugin("L3MON4D3/LuaSnip", "luasnip")
 -- START: nvim-cmp (補完プラグイン) の設定
 -- ============================================================================
 ensure_plugin("hrsh7th/nvim-cmp", "nvim-cmp")
-ensure_plugin("hrsh7th/cmp-nvim-lsp", "cmp-nvim-lsp") -- LSP補完用 (今回は設定のみ)
 ensure_plugin("hrsh7th/cmp-buffer", "cmp-buffer")     -- バッファ内補完
 ensure_plugin("hrsh7th/cmp-path", "cmp-path")         -- パス補完
 ensure_plugin("saadparwaiz1/cmp_luasnip", "cmp_luasnip") -- LuaSnip連携
@@ -76,18 +75,17 @@ ensure_plugin("zbirenbaum/copilot-cmp", "copilot-cmp")
 -- Phase 2: 軽作業必須 (メモ・ジャーナル機能) - 起動時間 30-40ms目標
 -- ============================================================================
 
--- あなた専用キーマップ（現在の設定を移植）
+-- keymap
+vim.api.nvim_set_var("mapleader", " ")  -- リーダーキーをスペースに設定
 vim.keymap.set("n", "<leader>fej", ":e ++encoding=sjis<CR>", { desc = "Open file with SJIS encoding" })
-
--- マークダウン支援
 vim.keymap.set("n", "<leader>~~", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\~\\~\\2\\~\\~<CR>:noh<CR>", { desc = "Add strikethrough" })
 vim.keymap.set("n", "<leader>**", ":s/^\\( *-* *\\)\\(.*\\)/\\1\\*\\*\\2\\*\\*<CR>:noh<CR>", { desc = "Add bold" })
 
--- 時刻挿入機能
-vim.keymap.set("i", "<A-b>", '<C-R>=strftime("%H:%M")<CR>', { desc = "Insert current time" })
+-- Insert curret time
+vim.keymap.set("i", "<A-b>", '<C-R>=strftime("%H:%M")<CR>', { desc = "Add bold" })
 vim.keymap.set("n", "<A-b>", 'i<C-R>=strftime("%H:%M")<CR><Esc>', { desc = "Insert current time" })
 
--- 自動保存設定（あなたの現在の設定）
+-- Auto save
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   pattern = { "*" },
   command = "silent! wall",
@@ -96,13 +94,13 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
 })
 
 -- ============================================================================
--- Daily Journal機能（あなたの既存コードを移植・簡素化）
+-- Daily Journal Functionality
 -- ============================================================================
 
 local DailyJournal = {}
 
 -- 設定
-DailyJournal.journal_dir = vim.env.USERPROFILE and (vim.env.USERPROFILE .. "/notes") or (vim.env.HOME .. "/notes")
+DailyJournal.journal_dir = vim.env.OneDriveCommercial and (vim.env.OneDriveCommercial .. "/notes") or (vim.env.OneDrive .. "/repos/memos")
 
 -- ユーティリティ関数
 local function get_date_filename()
@@ -117,30 +115,22 @@ local function is_valid_journal(filename)
   return filename:match("^%d%d%d%d.%d%d.%d%d.md$")
 end
 
--- 今日のジャーナルを開く
 function DailyJournal.open_today_journal()
   local today_filename = get_date_filename()
   local today_journal_filepath = DailyJournal.journal_dir .. "/" .. today_filename
   
-  -- ディレクトリが存在しない場合は作成
-  vim.fn.mkdir(DailyJournal.journal_dir, "p")
+  -- ディレクトリが存在しない場合何もしない
+  if not vim.fn.isdirectory(DailyJournal.journal_dir) then
+    vim.api.nvim_err_writeln("Journal directory does not exist: " .. DailyJournal.journal_dir)
+    return
+  end
   
   open_file(today_journal_filepath)
   
   -- ファイルが空の場合、基本テンプレートを挿入
   if vim.fn.line('$') == 1 and vim.fn.getline(1) == '' then
-    local date_str = os.date("%Y年%m月%d日 (%a)")
-    local lines = {
-      "# " .. date_str,
-      "",
-      "## TODO",
-      "",
-      "## 完了",
-      "",
-      "## メモ",
-      "",
-    }
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+    local date_str = os.date("%H:%M ")
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, date_str)
     vim.cmd("normal! 4j$")  -- TODOセクションの末尾にカーソル移動
   end
 end
@@ -170,23 +160,23 @@ function DailyJournal.open_latest_journal()
   vim.api.nvim_err_writeln("No previous journal files found.")
 end
 
--- VimEnter時の自動開設定（あなたの既存機能）
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local cwd = vim.fn.getcwd()
-    if cwd == DailyJournal.journal_dir then
-      DailyJournal.open_today_journal()
-      vim.cmd("set filetype=markdown")
-      if vim.env.OneDriveCommercial ~= nil then
-        vim.cmd("bdelete")
-      end
-    end
-  end,
-})
+-- -- VimEnter時の自動開設定（あなたの既存機能）
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--   callback = function()
+--     local cwd = vim.fn.getcwd()
+--     if cwd == DailyJournal.journal_dir then
+--       DailyJournal.open_today_journal()
+--       vim.cmd("set filetype=markdown")
+--       if vim.env.OneDriveCommercial ~= nil then
+--         vim.cmd("bdelete")
+--       end
+--     end
+--   end,
+-- })
 
 -- キーマップ設定
-vim.keymap.set("n", "<C-i>", DailyJournal.open_today_journal, { desc = "Open today's journal" })
-vim.keymap.set("n", "<C-A-i>", DailyJournal.open_latest_journal, { desc = "Open latest journal" })
+vim.keymap.set("n", "<leader>ji", DailyJournal.open_today_journal, { desc = "Open today's journal" })
+vim.keymap.set("n", "<leader>jo", DailyJournal.open_latest_journal, { desc = "Open latest journal" })
 
 -- ============================================================================
 -- LuaSnip設定（あなたのスニペット要件に対応）
@@ -241,26 +231,6 @@ vim.defer_fn(function()
       luasnip.change_choice(1)
     end
   end, { desc = "Change choice in snippet" })
-
-  -- スニペット一覧表示
-  vim.keymap.set("n", "<leader>ss", function()
-    print("Available LuaSnip snippets for markdown/journal:")
-    local snippets = {
-      {"regmtg", "定例会議スケジュール (1時間)"},
-      {"mtg", "会議スケジュール (30分)"},
-      {"task", "未完了タスク"},
-      {"done", "完了タスク"},
-      {"time", "現在時刻"},
-      {"date", "今日の日付"},
-      {"datetime", "現在日時"},
-      {"h1", "時刻付きH1見出し"},
-      {"h2", "時刻付きH2見出し"},
-    }
-    
-    for _, snippet in ipairs(snippets) do
-      print("  " .. snippet[1] .. " - " .. snippet[2])
-    end
-  end, { desc = "Show available snippets" })
 
 end, 500) -- 500ms後に実行（プラグイン読み込み待ち）
 
@@ -320,7 +290,7 @@ vim.defer_fn(function()
       end, { "i", "s" }),
     },
   })
-end, 600) -- LuaSnipより少し後に実行
+end, 3000) -- LuaSnipより少し後に実行
 -- ============================================================================
 -- END: nvim-cmp (補完プラグイン) の設定
 -- ============================================================================
@@ -338,8 +308,9 @@ vim.defer_fn(function()
     panel = { enabled = true },      -- パネルを有効化し、他の候補を表示できるようにする
     suggestion = { enabled = false }, -- cmp経由で表示するため、自動表示は無効化
     filetypes = {
-      markdown = false, -- markdownでは無効化
-      ["*"] = true,       -- それ以外の全ファイルタイプで有効化
+      lua = true,        -- Luaファイルで有効化
+      markdown = true,   -- markdownでは無効化
+      ["*"] = false,     -- その他のファイルタイプでは無効化
     },
   })
 
@@ -352,7 +323,7 @@ vim.defer_fn(function()
 
   -- Copilotパネルを開くキーマップ
   vim.keymap.set("i", "<A-c>", function() vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Cmd>Copilot panel<CR>", true, true, true), "") end, { desc = "Open Copilot Panel" })
-end, 700) -- cmpの後に実行
+end, 3200) -- cmpの後に実行
 -- ============================================================================
 -- END: GitHub Copilot の設定
 -- ============================================================================
